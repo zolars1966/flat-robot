@@ -33,15 +33,20 @@ if __name__ == "__main__":
     sf = pg.Surface((vx, vy))
     sf.fill((110, 110, 110))
 
-    # 
+    # main cycle
     while True:
+        # surfaces cleaning
         screen.fill((140, 140, 140))
         sf.fill((110, 110, 110))
+        
+        # checking for keyboar, window, mouse inputs or events
         keys = pg.key.get_pressed()
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 exit()
             if event.type == pg.KEYDOWN:
+              
+              # robot's controls
               if event.key == pg.K_w:
                   y -= 1
               if event.key == pg.K_s:
@@ -53,11 +58,13 @@ if __name__ == "__main__":
               if event.key == pg.K_SPACE:
                   flat[x][y] = 0
 
+        # checking for scale changes
         if keys[pg.K_p]:
             scale += 0.1
         if keys[pg.K_o]:
             scale -= 0.1
 
+        # drawing flat
         for i, line in enumerate(flat):
             for j, quad in enumerate(line):
                 if not quad:
@@ -79,6 +86,7 @@ if __name__ == "__main__":
                                                           [min(vx, (i + 1) * scale * 5), min(vy, (j + 1) * scale * 5)],
                                                           [min(vx, i * scale * 5), min(vy, (j + 1) * scale * 5)]], 1)
 
+        # drawing robot
         pg.draw.circle(sf, (220, 0, 0), [(x + 0.5) * scale * 5, (y + 0.5) * scale * 5], scale * 2.5)
 
         pg.draw.polygon(screen, (80, 80, 80), [[0, 0], [vx, 0], [vx, vy], [0, vy]], 1)
