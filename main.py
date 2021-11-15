@@ -1,29 +1,39 @@
+# pygame and sys libraries importing
 import pygame as pg
 import sys
 
 
+# import an integers from one of flat.txt lines
 def parceline(f):
     return list(map(int, f.readline()[:-1].split()))
 
 
 if __name__ == "__main__":
+    # flat render scale
     scale = 20.0
 
-    filename = sys.argv[1]
+    # importing flat.txt for flatmap
+    filename = "flat.txt" # sys.argv[1]
     f = open(filename)
+    # width and height of imported flat
     m, n = parceline(f)
-
-    screen = pg.display.set_mode((1280, 720))
-
     flat = list()
     for i in range(m):
         flat.append(parceline(f))
     print(*flat)
+
+    # creating a pygame widow
+    screen = pg.display.set_mode((1280, 720))
+
+    # cleaner coords import
     y, x = parceline(f)
 
+    # creating a surface for flat render
     view_flat = vx, vy = int(screen.get_width() * 2/3), int(screen.get_height() * 2/3)
     sf = pg.Surface((vx, vy))
     sf.fill((110, 110, 110))
+
+    # 
     while True:
         screen.fill((140, 140, 140))
         sf.fill((110, 110, 110))
