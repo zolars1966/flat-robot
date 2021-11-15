@@ -7,7 +7,7 @@ def parceline(f):
 
 
 if __name__ == "__main__":
-    scale = 1.0
+    scale = 20.0
 
     filename = sys.argv[1]
     f = open(filename)
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     for i in range(m):
         flat.append(parceline(f))
     print(*flat)
-    x, y = parceline(f)
+    y, x = parceline(f)
 
     view_flat = vx, vy = int(screen.get_width() * 2/3), int(screen.get_height() * 2/3)
     sf = pg.Surface((vx, vy))
@@ -31,6 +31,15 @@ if __name__ == "__main__":
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 exit()
+            if event.type == pg.KEYDOWN:
+              if event.key == pg.K_w:
+                  y -= 1
+              if event.key == pg.K_s:
+                  y += 1
+              if event.key == pg.K_a:
+                  x -= 1
+              if event.key == pg.K_d:
+                  x += 1
 
         if keys[pg.K_p]:
             scale += 0.1
