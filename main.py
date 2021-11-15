@@ -40,6 +40,8 @@ if __name__ == "__main__":
                   x -= 1
               if event.key == pg.K_d:
                   x += 1
+              if event.key == pg.K_SPACE:
+                  flat[x][y] = 0
 
         if keys[pg.K_p]:
             scale += 0.1
