@@ -1,14 +1,17 @@
 # pygame and sys libraries importing
+from environment import Environment
 import pygame as pg
 import random as rand
 import math
 import sys
-from environment import Environment
 
 
+# global references
 WIDTH, HEIGHT = 1280, 720
+TICK_RATE = 10
 F_WIDTH, F_HEIGHT = int(sys.argv[1]), int(sys.argv[2])
-env = Environment(F_WIDTH, F_HEIGHT)
+ROBOTS_NUM = min(F_WIDTH * F_HEIGHT, int(sys.argv[3]))
+env = Environment(F_WIDTH, F_HEIGHT, ROBOTS_NUM)
 
 
 if __name__ == "__main__":
@@ -26,6 +29,8 @@ if __name__ == "__main__":
     sf = pg.Surface((vx, vy))
     sf.set_alpha(150)
 
+    t = 0
+
     # main cycle
     while True:
         flat = pg.surfarray.make_surface(env.flat)
@@ -40,16 +45,14 @@ if __name__ == "__main__":
             if event.type == pg.QUIT:
                 exit()
             if event.type == pg.KEYDOWN:
-              if event.key == pg.K_w:
-                 env.do("up")
-              if event.key == pg.K_s:
-                 env.do("down")
-              if event.key == pg.K_a:
-                 env.do("left")
-              if event.key == pg.K_d:
-                 env.do("right")
-              if event.key == pg.K_SPACE:
-                 env.do("clean")
+                if event.key == pg.K_u:
+                    TICK_RATE -= 1
+                if event.key == pg.K_i:
+                    TICK_RATE += 1
+
+        # upating environment's state
+        if t % round(1/(TICK_RATE * 0.01)) == 0:
+            env.update()
 
         # checking for scale changes
         if keys[pg.K_p]:
@@ -65,13 +68,16 @@ if __name__ == "__main__":
         if keys[pg.K_UP]:
             shift_y -= 5
 
+        t += 1
+
         # drawing robot
-        pg.draw.circle(flat, (220, 0, 0), [(env.x + 0.5) * scale, (env.y + 0.5) * scale], scale / 2)
+        for robot in range(ROBOTS_NUM):
+            pg.draw.circle(flat, (220, 0, 0), [(env.coords[robot][0] + 0.5) * scale, (env.coords[robot][1] + 0.5) * scale], scale / 2)
 
         screen.blit(flat, (shift, shift_y))
         # screen.blit(sf, (WIDTH - vx, 0))
 
-        pg.display.set_caption("$$~flat-robot " + str(round(clock.get_fps(), 2)) + " ~$$")
+        pg.display.set_caption("$~flat-robot ~fps: " + str(round(clock.get_fps(), 2)) + " ~tickrate: " + str(TICK_RATE))
 
         pg.display.flip()
-        clock.tick()
+        clock.tick(0)
