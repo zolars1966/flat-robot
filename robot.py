@@ -7,5 +7,7 @@ class Robot:
         return 1, 0
     def left(self):
         return -1, 0
+    def sit(self):
+        return 0, 0
     def clean(self):
         return "clean"

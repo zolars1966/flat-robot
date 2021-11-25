@@ -8,7 +8,7 @@ import sys
 
 # global references
 WIDTH, HEIGHT = 1280, 720
-TICK_RATE = 10
+TICK_RATE = 5
 F_WIDTH, F_HEIGHT = int(sys.argv[1]), int(sys.argv[2])
 ROBOTS_NUM = min(F_WIDTH * F_HEIGHT, int(sys.argv[3]))
 env = Environment(F_WIDTH, F_HEIGHT, ROBOTS_NUM)
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     shift_y = 0
 
     # creating a pygame window
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    screen = pg.display.set_mode((WIDTH, HEIGHT), vsync=1)
     clock = pg.time.Clock()
 
     # creating a surface for flat render
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     sf = pg.Surface((vx, vy))
     sf.set_alpha(150)
 
-    t = 0
+    upd_ticks = pg.time.get_ticks()
 
     # main cycle
     while True:
@@ -47,11 +47,14 @@ if __name__ == "__main__":
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_u:
                     TICK_RATE -= 1
+                    upd_ticks = pg.time.get_ticks()
                 if event.key == pg.K_i:
                     TICK_RATE += 1
+                    upd_ticks = pg.time.get_ticks()
 
         # upating environment's state
-        if t % round(1/(TICK_RATE * 0.01)) == 0:
+        if 0 <= pg.time.get_ticks() - upd_ticks - (1000 / TICK_RATE) <= 75: # pg.time.get_ticks() - upd_ticks >= (t + 1) * (1000 / TICK_RATE):
+            upd_ticks = pg.time.get_ticks()
             env.update()
 
         # checking for scale changes
@@ -68,8 +71,6 @@ if __name__ == "__main__":
         if keys[pg.K_UP]:
             shift_y -= 5
 
-        t += 1
-
         # drawing robot
         for robot in range(ROBOTS_NUM):
             pg.draw.circle(flat, (220, 0, 0), [(env.coords[robot][0] + 0.5) * scale, (env.coords[robot][1] + 0.5) * scale], scale / 2)
@@ -80,4 +81,4 @@ if __name__ == "__main__":
         pg.display.set_caption("$~flat-robot ~fps: " + str(round(clock.get_fps(), 2)) + " ~tickrate: " + str(TICK_RATE))
 
         pg.display.flip()
-        clock.tick(0)
+        clock.tick()

@@ -31,8 +31,24 @@ class Environment:
             for j in range(self.height):
                 if i * self.height + j >= self.robots_num:
                     break
-                self.coords[i * self.height + j] = [i, j]
-                self.future_coords[i * self.height + j] = [i, j]
+                self.coords[i * self.height + j] = [5, 6]
+                self.future_coords[i * self.height + j] = [5, 6]
+
+    def view(self, agent):
+        view = []
+
+        if np.array_equal(self.flat[self.coords[agent][0]][self.coords[agent][1]], np.asarray([160, 160, 160])):
+            view.append("dirty")
+        if self.coords[agent][0] - 1 < 0:
+            view.append("left")
+        if self.coords[agent][0] + 1 >= self.width:
+            view.append("right")
+        if self.coords[agent][1] - 1 < 0:
+            view.append("up")
+        if self.coords[agent][1] + 1 >= self.height:
+            view.append("down")
+
+        return view
 
     def check(self, agent, act):
         new_coord = [self.coords[agent][0] + act[0], self.coords[agent][1] + act[1]]
@@ -42,7 +58,8 @@ class Environment:
 
     def update(self):
         for agent in range(self.robots_num):
-            act = self.agents[agent].make_choice()
+            view = self.view(agent)
+            act = self.agents[agent].make_choice(view)
             if act == "clean":
                 self.flat[self.coords[agent][0]][self.coords[agent][1]] = [255, 255, 255]
             elif act != "sit":

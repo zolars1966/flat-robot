@@ -9,9 +9,10 @@ class Player:
                          "left":self.robot.left(),
                          "down":self.robot.down(),
                          "right":self.robot.right(),
+                         "sit":self.robot.sit(),
                          "clean":self.robot.clean()}
 
-    def make_choice(self):
+    def make_choice(self, view):
         keys = pg.key.get_pressed()
 
         if keys[pg.K_w]:
@@ -25,4 +26,4 @@ class Player:
         if keys[pg.K_SPACE]:
             return self.commands["clean"]
 
-        return "sit"
+        return self.commands["sit"]
