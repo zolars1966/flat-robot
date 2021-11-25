@@ -31,8 +31,8 @@ class Environment:
             for j in range(self.height):
                 if i * self.height + j >= self.robots_num:
                     break
-                self.coords[i * self.height + j] = [5, 6]
-                self.future_coords[i * self.height + j] = [5, 6]
+                self.coords[i * self.height + j] = [i, j]
+                self.future_coords[i * self.height + j] = [i, j]
 
     def view(self, agent):
         view = []
